@@ -59,8 +59,10 @@ public class CardsServiceImpl implements ICardsService {
 
     @Override
     public boolean deleteCard(String mobileNumber) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCard'");
+        Cards cards = cardsRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Card", "MobileNum.", mobileNumber));
+        cardsRepository.deleteById(cards.getCardId());
+        return true;
     }
 
 }
