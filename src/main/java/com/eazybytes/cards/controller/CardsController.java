@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,5 +42,19 @@ public class CardsController {
             @Valid @Pattern(regexp = "(^$|[0-9]{10})", message = "Please provide a valid mobile number") @RequestParam String mobileNumber) {
         CardsDto cardsDto = iCardsService.fetchCard(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDto> updateCard(@Valid @RequestBody CardsDto cardsDto) {
+        boolean isUpdated = iCardsService.updateCard(cardsDto);
+        if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(CardsConstants.STATUS_200, CardsConstants.MESSAGE_200));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_UPDATE));
+        }
     }
 }

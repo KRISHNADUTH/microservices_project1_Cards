@@ -50,8 +50,11 @@ public class CardsServiceImpl implements ICardsService {
 
     @Override
     public boolean updateCard(CardsDto cardsDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCard'");
+        Cards cards = cardsRepository.findByCardNumber(cardsDto.getCardNumber())
+                .orElseThrow(() -> new ResourceNotFoundException("Card", "CardNumber", cardsDto.getCardNumber()));
+        CardsMapper.mapToCards(cardsDto, cards);
+        cardsRepository.save(cards);
+        return true;
     }
 
     @Override
